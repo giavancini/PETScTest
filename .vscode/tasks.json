@@ -1,0 +1,62 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "make",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-j${nproc}"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/build/${input:buildConfig}/"
+            }
+        },
+        {
+            "label": "build",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/build/${input:buildConfig}/"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "make"
+            ]
+        },
+        {
+            "label": "Run",
+            "type": "shell",
+            "command": "mpiexec -np ${input:numberOfProcesses} ${workspaceFolder}/build/${input:buildConfig}/runPFEM -ksp_monitor_lg_residualnorm -ksp_log -ksp_view -ksp_monitor_true_residual -ksp_converged_reason | tee log.txt",
+            "args": [],
+            "group": "test",
+            "presentation": {
+                "reveal": "always"
+            },
+            "runOptions": {
+                "reevaluateOnRerun": false
+            },
+            "dependsOn": [
+                "make"
+            ],
+            "problemMatcher": []
+        }
+    ],
+        "inputs": [
+          {
+            "id": "buildConfig",
+            "type": "pickString",
+            "description": "Choose build configuration",
+            "options": ["Debug", "Release"],
+            "default": "Release"
+          },
+          {
+            "id": "numberOfProcesses",
+            "type": "promptString",
+            "description": "Number of processes to run the application",
+            "default": "1"
+          }
+    ]
+}

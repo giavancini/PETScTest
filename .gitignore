@@ -1,0 +1,9 @@
+build/
+results/
+*.vtu
+*.o
+*.geo
+*.msh
+*.txt
+!CMakeLists.txt
+*.dat
